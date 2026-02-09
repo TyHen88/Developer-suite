@@ -2,7 +2,7 @@
 
 DevSuite is a high-performance, aesthetically premium administrative ecosystem built for modern SaaS products and developer tools. It provides a complete control plane for content management, user orchestration, and monetization strategy.
 
-![DevSuite Admin Preview](https://raw.githubusercontent.com/TyHen88/Developer-suite/main/public/v0-logo-light.svg)
+![DevSuite Admin Preview](https://raw.githubusercontent.com/TyHen88/Developer-suite/main/public/devsuite-logo-light.svg)
 
 ## 🚀 Vision
 To provide developers with a "Day 1" infrastructure that feels like a "Year 5" enterprise product. DevSuite bridges the gap between raw code and a polished, accessible management interface.
