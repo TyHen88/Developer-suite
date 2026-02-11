@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { users } from "@/db/schema";
-import { eq, inArray } from "drizzle-orm";
+import { desc, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { auth, currentUser, clerkClient } from "@clerk/nextjs/server";
 
@@ -71,4 +71,15 @@ export async function bulkSuspend(userIds: string[]) {
 
   revalidatePath("/admin/users");
   return { success: true };
+}
+
+//get user recent activity
+export async function getUserRecentActivity(userId: string) {
+  const { userId: requesterId } = await auth();
+  if (!requesterId) throw new Error("Unauthorized");
+
+  const recentActivity = await db.select().from(users).where(eq(users.id, userId)).orderBy(desc(users.createdAt)).limit(10);
+
+  revalidatePath("/admin/users");
+  return { success: true, recentActivity };
 }
