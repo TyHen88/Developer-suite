@@ -1,5 +1,7 @@
 import { ExampleForm } from "@/components/admin/example-form"
-import { getMockAdminExampleById } from "@/lib/mock-data"
+import { db } from "@/lib/db"
+import { examples as examplesTable } from "@/db/schema"
+import { eq } from "drizzle-orm"
 import { notFound } from "next/navigation"
 
 interface EditExamplePageProps {
@@ -8,10 +10,20 @@ interface EditExamplePageProps {
 
 export default async function EditExamplePage({ params }: EditExamplePageProps) {
     const { id } = await params
-    const example = getMockAdminExampleById(id)
+
+    const example = await db.query.examples.findFirst({
+        where: eq(examplesTable.id, id)
+    })
 
     if (!example) {
         notFound()
+    }
+
+    const formattedExample = {
+        ...example,
+        difficulty: example.difficulty as "beginner" | "intermediate" | "advanced",
+        createdAt: example.createdAt.toISOString(),
+        updatedAt: example.updatedAt.toISOString(),
     }
 
     return (
@@ -21,7 +33,7 @@ export default async function EditExamplePage({ params }: EditExamplePageProps) 
                 <p className="text-muted-foreground">Updating: <span className="text-foreground font-semibold">{example.title}</span></p>
             </div>
 
-            <ExampleForm initialData={example} />
+            <ExampleForm initialData={formattedExample as any} />
         </div>
     )
 }

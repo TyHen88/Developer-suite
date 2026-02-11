@@ -76,10 +76,23 @@ export function StarterForm({ initialData }: StarterFormProps) {
 
     const onSubmit = async (data: StarterFormValues) => {
         setIsSubmitting(true)
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        setIsSubmitting(false)
-        toast.success(`Starter ${initialData ? 'updated' : 'created'} successfully!`)
-        router.push("/admin/starters")
+        try {
+            const { createStarter, updateStarter } = await import("@/actions/galleryActions")
+            if (initialData) {
+                await updateStarter(initialData.id, data)
+                toast.success("Starter updated successfully!")
+            } else {
+                await createStarter(data)
+                toast.success("Starter created successfully!")
+            }
+            router.push("/admin/starters")
+            router.refresh()
+        } catch (error) {
+            console.error(error)
+            toast.error("Failed to save starter!")
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     const toggleTech = (tech: string) => {

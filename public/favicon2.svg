@@ -1,0 +1,65 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root {
+      --main-color: #000000;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --main-color: #ffffff;
+      }
+    }
+    .text-main { fill: var(--main-color); stroke: var(--main-color); }
+  </style>
+  <defs>
+    <filter id="cyan-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feFlood flood-color="#22d3ee" result="color" />
+      <feComposite in="color" in2="blur" operator="in" result="glow" />
+      <feMerge>
+        <feMergeNode in="glow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="green-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feFlood flood-color="#4ade80" result="color" />
+      <feComposite in="color" in2="blur" operator="in" result="glow" />
+      <feMerge>
+        <feMergeNode in="glow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Laptop Icon -->
+  <g transform="translate(40, 300)" class="text-main">
+    <path d="M0 80H120V95C120 103.284 113.284 110 105 110H15C6.7157 110 0 103.284 0 95V80Z" fill="currentColor"/>
+    <rect x="10" y="0" width="100" height="70" rx="4" fill="none" stroke="currentColor" stroke-width="6"/>
+    <!-- Connecting Line -->
+    <path d="M120 95H160" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <!-- Logo Text Area -->
+  <g transform="translate(210, 200)">
+    <!-- < -->
+    <path d="M0 40L-25 60L0 80" stroke="#22d3ee" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" filter="url(#cyan-glow)"/>
+    
+    <!-- C -->
+    <path d="M45 40C30 40 20 50 20 60C20 70 30 80 45 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" fill="none" class="text-main"/>
+    
+    <!-- O (Power Button) -->
+    <g transform="translate(90, 60)" class="text-main">
+      <path d="M0 -20 A 20 20 0 1 0 8.5 -18" stroke="currentColor" stroke-width="12" fill="none" stroke-linecap="round" transform="rotate(-40)"/>
+      <rect x="-3" y="-22" width="6" height="12" rx="2" fill="currentColor"/>
+    </g>
+    
+    <!-- D -->
+    <path d="M125 40V80C125 80 155 80 155 60C155 40 125 40 125 40Z" stroke="#22d3ee" stroke-width="14" stroke-linecap="round" fill="none" filter="url(#cyan-glow)"/>
+    
+    <!-- E -->
+    <path d="M210 40H185V80H210M185 60H205" stroke="#4ade80" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#green-glow)"/>
+    
+    <!-- > -->
+    <path d="M230 40L255 60L230 80" stroke="#22d3ee" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" filter="url(#cyan-glow)"/>
+  </g>
+</svg>

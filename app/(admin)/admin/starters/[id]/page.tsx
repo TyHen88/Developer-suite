@@ -1,5 +1,7 @@
 import { StarterForm } from "@/components/admin/starter-form"
-import { getMockAdminStarterById } from "@/lib/mock-data"
+import { db } from "@/lib/db"
+import { starters as startersTable } from "@/db/schema"
+import { eq } from "drizzle-orm"
 import { notFound } from "next/navigation"
 
 interface EditStarterPageProps {
@@ -8,10 +10,20 @@ interface EditStarterPageProps {
 
 export default async function EditStarterPage({ params }: EditStarterPageProps) {
     const { id } = await params
-    const starter = getMockAdminStarterById(id)
+
+    const starter = await db.query.starters.findFirst({
+        where: eq(startersTable.id, id)
+    })
 
     if (!starter) {
         notFound()
+    }
+
+    const formattedStarter = {
+        ...starter,
+        repoUrl: starter.repoUrl ?? undefined,
+        createdAt: starter.createdAt.toISOString(),
+        updatedAt: starter.updatedAt.toISOString(),
     }
 
     return (
@@ -21,7 +33,7 @@ export default async function EditStarterPage({ params }: EditStarterPageProps) 
                 <p className="text-muted-foreground">Updating: <span className="text-foreground font-semibold">{starter.name}</span></p>
             </div>
 
-            <StarterForm initialData={starter} />
+            <StarterForm initialData={formattedStarter as any} />
         </div>
     )
 }

@@ -1,5 +1,7 @@
 import { TemplateForm } from "@/components/admin/template-form"
-import { getMockAdminTemplateById } from "@/lib/mock-data"
+import { db } from "@/lib/db"
+import { templates as templatesTable } from "@/db/schema"
+import { eq } from "drizzle-orm"
 import { notFound } from "next/navigation"
 
 interface EditTemplatePageProps {
@@ -8,10 +10,20 @@ interface EditTemplatePageProps {
 
 export default async function EditTemplatePage({ params }: EditTemplatePageProps) {
     const { id } = await params
-    const template = getMockAdminTemplateById(id)
+
+    const template = await db.query.templates.findFirst({
+        where: eq(templatesTable.id, id)
+    })
 
     if (!template) {
         notFound()
+    }
+
+    const formattedTemplate = {
+        ...template,
+        previewImage: template.previewImage ?? undefined,
+        createdAt: template.createdAt.toISOString(),
+        updatedAt: template.updatedAt.toISOString(),
     }
 
     return (
@@ -21,7 +33,7 @@ export default async function EditTemplatePage({ params }: EditTemplatePageProps
                 <p className="text-muted-foreground">Updating: <span className="text-foreground font-semibold">{template.title}</span></p>
             </div>
 
-            <TemplateForm initialData={template} />
+            <TemplateForm initialData={formattedTemplate as any} />
         </div>
     )
 }

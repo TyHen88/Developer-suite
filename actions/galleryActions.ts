@@ -1,7 +1,7 @@
 "use server"
 
 import { db } from "@/lib/db";
-import { components, templates, starters } from "@/db/schema";
+import { components, templates, starters, docs, examples } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
@@ -126,5 +126,81 @@ export async function deleteStarter(id: string) {
 
     revalidatePath("/admin/starters");
     revalidatePath("/starters");
+    return { success: true };
+}
+
+// --- Doc Actions ---
+
+export async function createDoc(data: any) {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    const [newDoc] = await db.insert(docs).values({
+        ...data,
+        updatedAt: new Date(),
+    }).returning();
+
+    revalidatePath("/admin/docs");
+    return { success: true, id: newDoc.id };
+}
+
+export async function updateDoc(id: string, data: any) {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    await db.update(docs).set({
+        ...data,
+        updatedAt: new Date(),
+    }).where(eq(docs.id, id));
+
+    revalidatePath("/admin/docs");
+    return { success: true };
+}
+
+export async function deleteDoc(id: string) {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    await db.delete(docs).where(eq(docs.id, id));
+
+    revalidatePath("/admin/docs");
+    return { success: true };
+}
+
+// --- Example Actions ---
+
+export async function createExample(data: any) {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    const [newEx] = await db.insert(examples).values({
+        ...data,
+        updatedAt: new Date(),
+    }).returning();
+
+    revalidatePath("/admin/examples");
+    return { success: true, id: newEx.id };
+}
+
+export async function updateExample(id: string, data: any) {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    await db.update(examples).set({
+        ...data,
+        updatedAt: new Date(),
+    }).where(eq(examples.id, id));
+
+    revalidatePath("/admin/examples");
+    return { success: true };
+}
+
+export async function deleteExample(id: string) {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    await db.delete(examples).where(eq(examples.id, id));
+
+    revalidatePath("/admin/examples");
     return { success: true };
 }

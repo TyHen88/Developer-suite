@@ -9,10 +9,11 @@ export const metadata = {
 
 import { db } from '@/lib/db'
 import { components } from '@/db/schema'
-import { desc } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 
 export default async function ComponentsPage() {
     const data = await db.query.components.findMany({
+        where: eq(components.isPublished, true),
         orderBy: [desc(components.createdAt)]
     })
 

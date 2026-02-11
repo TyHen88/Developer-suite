@@ -69,10 +69,23 @@ export function ExampleForm({ initialData }: ExampleFormProps) {
 
     const onSubmit = async (data: ExampleFormValues) => {
         setIsSubmitting(true)
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        setIsSubmitting(false)
-        toast.success(`Example ${initialData ? 'updated' : 'created'} successfully!`)
-        router.push("/admin/examples")
+        try {
+            const { createExample, updateExample } = await import("@/actions/galleryActions")
+            if (initialData) {
+                await updateExample(initialData.id, data)
+                toast.success("Example updated successfully!")
+            } else {
+                await createExample(data)
+                toast.success("Example created successfully!")
+            }
+            router.push("/admin/examples")
+            router.refresh()
+        } catch (error) {
+            console.error(error)
+            toast.error("Failed to save example!")
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     return (

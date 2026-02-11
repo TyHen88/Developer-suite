@@ -1,7 +1,13 @@
+"use client"
+
 import Link from 'next/link'
 import { Menu } from 'lucide-react'
+import { SignInButton, UserButton, SignedIn, SignedOut, useUser } from '@clerk/nextjs'
 
 export default function Header() {
+  const { user } = useUser()
+  const isAdmin = user?.publicMetadata?.role === 'admin'
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -35,9 +41,21 @@ export default function Header() {
             </nav>
           </div>
           <div className="flex items-center gap-4">
-            {/* <button className="hidden sm:inline-flex h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
-              Sign In
-            </button> */}
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="hidden sm:inline-flex h-10 px-4 items-center justify-center rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
+                  Sign In
+                </button>
+              </SignInButton>
+            </SignedOut>
+            <SignedIn>
+              {isAdmin && (
+                <Link href="/admin" className="text-sm font-medium hover:text-primary transition-colors hidden sm:block">
+                  Admin
+                </Link>
+              )}
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
             <button className="md:hidden p-2 hover:bg-accent transition-colors rounded-md">
               <Menu size={20} />
             </button>

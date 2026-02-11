@@ -1,5 +1,7 @@
 import { DocForm } from "@/components/admin/doc-form"
-import { getMockAdminDocById } from "@/lib/mock-data"
+import { db } from "@/lib/db"
+import { docs as docsTable } from "@/db/schema"
+import { eq } from "drizzle-orm"
 import { notFound } from "next/navigation"
 
 interface EditDocPageProps {
@@ -8,10 +10,19 @@ interface EditDocPageProps {
 
 export default async function EditDocPage({ params }: EditDocPageProps) {
     const { id } = await params
-    const doc = getMockAdminDocById(id)
+
+    const doc = await db.query.docs.findFirst({
+        where: eq(docsTable.id, id)
+    })
 
     if (!doc) {
         notFound()
+    }
+
+    const formattedDoc = {
+        ...doc,
+        createdAt: doc.createdAt.toISOString(),
+        updatedAt: doc.updatedAt.toISOString(),
     }
 
     return (
@@ -21,7 +32,7 @@ export default async function EditDocPage({ params }: EditDocPageProps) {
                 <p className="text-muted-foreground">Updating: <span className="text-foreground font-semibold">{doc.title}</span></p>
             </div>
 
-            <DocForm initialData={doc} />
+            <DocForm initialData={formattedDoc as any} />
         </div>
     )
 }

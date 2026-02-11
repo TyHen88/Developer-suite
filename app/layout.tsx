@@ -6,6 +6,7 @@ import './globals.css'
 
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "sonner"
+import { AuthSync } from "@/components/AuthSync"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,19 +25,11 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
+        url: '/favicon.png',
+        type: 'image/png',
       },
     ],
-    apple: '/apple-icon.png',
+    apple: '/favicon.png',
   },
 }
 
@@ -58,6 +51,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <AuthSync />
             <Toaster />
             <Analytics />
           </ThemeProvider>

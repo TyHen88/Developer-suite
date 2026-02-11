@@ -67,10 +67,23 @@ export function DocForm({ initialData }: DocFormProps) {
 
     const onSubmit = async (data: DocFormValues) => {
         setIsSubmitting(true)
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        setIsSubmitting(false)
-        toast.success(`Documentation ${initialData ? 'updated' : 'created'} successfully!`)
-        router.push("/admin/docs")
+        try {
+            const { createDoc, updateDoc } = await import("@/actions/galleryActions")
+            if (initialData) {
+                await updateDoc(initialData.id, data)
+                toast.success("Documentation updated successfully!")
+            } else {
+                await createDoc(data)
+                toast.success("Documentation created successfully!")
+            }
+            router.push("/admin/docs")
+            router.refresh()
+        } catch (error) {
+            console.error(error)
+            toast.error("Failed to save documentation!")
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     return (

@@ -71,11 +71,24 @@ export function ComponentForm({ initialData }: ComponentFormProps) {
 
     const onSubmit = async (data: ComponentFormValues) => {
         setIsSubmitting(true)
-        // Simulated server action
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        setIsSubmitting(false)
-        toast.success(`Component ${initialData ? 'updated' : 'created'} successfully!`)
-        router.push("/admin/components")
+        try {
+            const { createComponent, updateComponent } = await import("@/actions/galleryActions")
+
+            if (initialData) {
+                await updateComponent(initialData.id, data)
+                toast.success("Component updated successfully!")
+            } else {
+                await createComponent(data)
+                toast.success("Component created successfully!")
+            }
+            router.push("/admin/components")
+            router.refresh()
+        } catch (error) {
+            console.error("Failed to save component:", error)
+            toast.error("Failed to save component. Please try again.")
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     const addTag = () => {

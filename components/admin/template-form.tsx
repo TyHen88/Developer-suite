@@ -40,6 +40,8 @@ interface TemplateFormProps {
 export function TemplateForm({ initialData }: TemplateFormProps) {
     const router = useRouter()
     const [isSubmitting, setIsSubmitting] = React.useState(false)
+    const [isUploading, setIsUploading] = React.useState(false)
+    const fileInputRef = React.useRef<HTMLInputElement>(null)
 
     const form = useForm<TemplateFormValues>({
         resolver: zodResolver(templateSchema),
@@ -66,10 +68,53 @@ export function TemplateForm({ initialData }: TemplateFormProps) {
 
     const onSubmit = async (data: TemplateFormValues) => {
         setIsSubmitting(true)
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        setIsSubmitting(false)
-        toast.success(`Template ${initialData ? 'updated' : 'created'} successfully!`)
-        router.push("/admin/templates")
+        try {
+            const { createTemplate, updateTemplate } = await import("@/actions/galleryActions")
+            if (initialData) {
+                await updateTemplate(initialData.id, data)
+                toast.success("Template updated successfully!")
+            } else {
+                await createTemplate(data)
+                toast.success("Template created successfully!")
+            }
+            router.push("/admin/templates")
+            router.refresh()
+        } catch (error) {
+            console.log(error)
+            toast.error("Failed to create template!")
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (file) {
+            setIsUploading(true)
+            const formData = new FormData()
+            formData.append("file", file)
+
+            try {
+                const res = await fetch("/api/upload", {
+                    method: "POST",
+                    body: formData,
+                })
+
+                if (!res.ok) throw new Error("Upload failed")
+
+                const data = await res.json()
+                if (data.secure_url) {
+                    form.setValue("previewImage", data.secure_url)
+                    toast.success("Image uploaded successfully!")
+                }
+            } catch (error) {
+                console.error("Upload error:", error)
+                toast.error("Failed to upload image")
+            } finally {
+                setIsUploading(false)
+                e.target.value = ""
+            }
+        }
     }
 
     return (
@@ -140,10 +185,43 @@ export function TemplateForm({ initialData }: TemplateFormProps) {
 
                             <div className="space-y-2">
                                 <Label>Preview Image</Label>
-                                <div className="border-2 border-dashed border-border rounded-2xl p-8 text-center hover:bg-primary/5 transition-colors cursor-pointer">
-                                    <ImageIcon className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
-                                    <p className="text-sm text-muted-foreground">Click to upload or drag and drop</p>
-                                    <p className="text-[10px] text-muted-foreground/60 uppercase mt-1">PNG, JPG up to 10MB</p>
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={handleImageUpload}
+                                />
+                                <div
+                                    className="border-2 border-dashed border-border rounded-2xl p-8 text-center hover:bg-primary/5 transition-colors cursor-pointer overflow-hidden relative group min-h-[160px] flex flex-col items-center justify-center"
+                                    onClick={() => {
+                                        console.log("Upload area clicked");
+                                        fileInputRef.current?.click();
+                                    }}
+                                >
+                                    {isUploading ? (
+                                        <div className="flex flex-col items-center gap-2">
+                                            <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                                            <p className="text-xs font-bold text-primary animate-pulse uppercase tracking-widest">Uploading...</p>
+                                        </div>
+                                    ) : form.watch("previewImage") ? (
+                                        <div className="relative aspect-video w-full">
+                                            <img
+                                                src={form.watch("previewImage")}
+                                                alt="Preview"
+                                                className="object-cover w-full h-full rounded-xl"
+                                            />
+                                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                                                <p className="text-white text-xs font-bold">Click to Change Image</p>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <ImageIcon className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
+                                            <p className="text-sm text-muted-foreground">Click to upload or drag and drop</p>
+                                            <p className="text-[10px] text-muted-foreground/60 uppercase mt-1">PNG, JPG up to 10MB</p>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </CardContent>

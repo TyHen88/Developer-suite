@@ -14,13 +14,23 @@ export default clerkMiddleware(async (auth, req) => {
         }
 
         // Role-based protection: check if the user is an admin
-        // Clerk stores this in publicMetadata or privateMetadata
-        const role = (session.sessionClaims?.metadata as any)?.role;
+        let role = (session.sessionClaims?.metadata as any)?.role;
+        console.log(`[Middleware] Target: ${req.nextUrl.pathname}, User: ${session.userId}, Initial Role: ${role}`);
+
+        if (!role && session.userId) {
+            const { clerkClient } = await import("@clerk/nextjs/server");
+            const client = await clerkClient();
+            const user = await client.users.getUser(session.userId);
+            role = user.publicMetadata.role;
+            console.log(`[Middleware] Fetched Role from API: ${role}`);
+        }
 
         if (role !== "admin") {
-            // Redirect non-admins to the home page or an unauthorized page
+            console.warn(`[Middleware] ACCESS DENIED: User ${session.userId} with role "${role}" tried to access ${req.nextUrl.pathname}. Redirecting to /`);
             return NextResponse.redirect(new URL("/", req.url));
         }
+        
+        console.log(`[Middleware] ACCESS GRANTED: User ${session.userId} is admin.`);
     }
 });
 
