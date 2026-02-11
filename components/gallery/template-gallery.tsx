@@ -31,13 +31,13 @@ import { type UITemplate, type TemplateCategory, type TemplateType, type UIStart
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 
-export default function TemplateGallery() {
+export default function TemplateGallery({ initialTemplates }: { initialTemplates: UITemplate[] }) {
     const [searchQuery, setSearchQuery] = React.useState("")
     const [selectedCategory, setSelectedCategory] = React.useState<TemplateCategory | "all">("all")
     const [selectedType, setSelectedType] = React.useState<TemplateType | "all">("all")
     const [sortBy, setSortBy] = React.useState<"popular" | "newest" | "complexity">("popular")
-    const [filteredTemplates, setFilteredTemplates] = React.useState<UITemplate[]>([])
-    const [isLoading, setIsLoading] = React.useState(true)
+    const [filteredTemplates, setFilteredTemplates] = React.useState<UITemplate[]>(initialTemplates)
+    const [isLoading, setIsLoading] = React.useState(false)
     const [isCopied, setIsCopied] = React.useState(false)
 
     React.useEffect(() => {

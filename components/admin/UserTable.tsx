@@ -38,9 +38,10 @@ import { format } from "date-fns"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { toggleSuspend, deleteUser, bulkSuspend } from "@/actions/userActions"
+import { toast } from "sonner"
 
-export function UserTable() {
-    const [users, setUsers] = React.useState<AdminUser[]>(MOCK_ADMIN_USERS)
+export function UserTable({ initialUsers }: { initialUsers: any[] }) {
+    const [users, setUsers] = React.useState<any[]>(initialUsers)
     const [searchQuery, setSearchQuery] = React.useState("")
     const [selectedIds, setSelectedIds] = React.useState<string[]>([])
     const [roleFilter, setRoleFilter] = React.useState<string>("all")
@@ -180,7 +181,7 @@ export function UserTable() {
                                             <Avatar className="h-9 w-9 border border-border shadow-sm">
                                                 <AvatarImage src={user.avatar} />
                                                 <AvatarFallback className="bg-primary/5 text-primary text-xs font-bold">
-                                                    {user.name.split(' ').map(n => n[0]).join('')}
+                                                    {user.name.split(' ').map((n: string) => n[0]).join('')}
                                                 </AvatarFallback>
                                             </Avatar>
                                             <div className="flex flex-col">

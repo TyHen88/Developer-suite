@@ -12,11 +12,11 @@ import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { toast } from "sonner"
 
-export default function StarterGallery() {
+export default function StarterGallery({ initialStarters }: { initialStarters: UIStarter[] }) {
     const [searchQuery, setSearchQuery] = React.useState("")
     const [selectedCategory, setSelectedCategory] = React.useState<StarterCategory | "all">("all")
-    const [starters, setStarters] = React.useState<UIStarter[]>([])
-    const [isLoading, setIsLoading] = React.useState(true)
+    const [starters, setStarters] = React.useState<UIStarter[]>(initialStarters)
+    const [isLoading, setIsLoading] = React.useState(false)
 
     React.useEffect(() => {
         const fetchData = async () => {

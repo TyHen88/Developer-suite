@@ -1,19 +1,18 @@
-"use client"
-
-import * as React from "react"
+import { currentUser } from "@clerk/nextjs/server"
+import { db } from "@/lib/db"
+import { users as usersTable, components, templates, starters } from "@/db/schema"
+import { count } from "drizzle-orm"
 import {
-    MOCK_ADMIN_STATS,
     MOCK_ACTIVITY
 } from "@/lib/mock-data"
-import { StatCard, StatCardSkeleton } from "@/components/admin/stat-card"
-import { RecentActivity, RecentActivitySkeleton } from "@/components/admin/recent-activity"
+import { StatCard } from "@/components/admin/stat-card"
+import { RecentActivity } from "@/components/admin/recent-activity"
 import { QuickActions } from "@/components/admin/quick-actions"
 import {
     Layers,
     Box,
     PlusCircle,
     FileText,
-    Users,
     Zap,
     TrendingUp,
     Activity as ActivityIcon
@@ -27,14 +26,25 @@ const iconMap: Record<string, any> = {
     "Docs": FileText,
 }
 
-export default function AdminDashboard() {
-    const [isLoading, setIsLoading] = React.useState(true)
+export default async function AdminDashboard() {
+    const user = await currentUser()
 
-    React.useEffect(() => {
-        // Simulate loading
-        const timer = setTimeout(() => setIsLoading(false), 800)
-        return () => clearTimeout(timer)
-    }, [])
+    // Fetch counts in parallel
+    const [userCount, componentCount, templateCount, starterCount] = await Promise.all([
+        db.select({ value: count() }).from(usersTable),
+        db.select({ value: count() }).from(components),
+        db.select({ value: count() }).from(templates),
+        db.select({ value: count() }).from(starters),
+    ])
+
+    const totalUsers = userCount[0].value
+
+    const stats = [
+        { label: "Components", value: componentCount[0].value.toString(), trend: 12.5, published: componentCount[0].value, draft: 0 },
+        { label: "Templates", value: templateCount[0].value.toString(), trend: 8.2, published: templateCount[0].value, draft: 0 },
+        { label: "Starters", value: starterCount[0].value.toString(), trend: 5.1, published: starterCount[0].value, draft: 0 },
+        { label: "Docs", value: "84", trend: 2.4, published: 80, draft: 4 },
+    ]
 
     return (
         <div className="space-y-10 pb-10">
@@ -48,7 +58,7 @@ export default function AdminDashboard() {
                         Dashboard
                     </h1>
                     <p className="text-muted-foreground font-medium">
-                        Welcome back, <span className="text-foreground font-bold">Alex Rivera</span>. Here's what's happening with DevSuite today.
+                        Welcome back, <span className="text-foreground font-bold">{user?.firstName || "Admin"}</span>. Here's what's happening with DevSuite today.
                     </p>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 bg-primary/5 border border-primary/10 rounded-2xl">
@@ -68,20 +78,16 @@ export default function AdminDashboard() {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {isLoading ? (
-                    [...Array(4)].map((_, i) => <StatCardSkeleton key={i} />)
-                ) : (
-                    MOCK_ADMIN_STATS.map((stat) => (
-                        <StatCard
-                            key={stat.label}
-                            label={stat.label}
-                            value={stat.value}
-                            trend={stat.trend}
-                            description={`${stat.published} published / ${stat.draft} draft`}
-                            icon={iconMap[stat.label] || Zap}
-                        />
-                    ))
-                )}
+                {stats.map((stat) => (
+                    <StatCard
+                        key={stat.label}
+                        label={stat.label}
+                        value={stat.value}
+                        trend={stat.trend}
+                        description={`${stat.published} published / ${stat.draft} draft`}
+                        icon={iconMap[stat.label] || Zap}
+                    />
+                ))}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -94,11 +100,7 @@ export default function AdminDashboard() {
                         </div>
                         <span className="text-[10px] font-bold text-primary underline cursor-pointer uppercase tracking-widest">View All Logs</span>
                     </div>
-                    {isLoading ? (
-                        <RecentActivitySkeleton />
-                    ) : (
-                        <RecentActivity activities={MOCK_ACTIVITY} />
-                    )}
+                    <RecentActivity activities={MOCK_ACTIVITY} />
                 </div>
 
                 {/* Platform Health / Insights */}
@@ -139,13 +141,13 @@ export default function AdminDashboard() {
                                         </div>
                                     ))}
                                     <div className="h-8 w-8 rounded-full border-2 border-background bg-primary flex items-center justify-center text-[10px] font-bold text-white">
-                                        +12
+                                        +{totalUsers > 4 ? totalUsers - 4 : 0}
                                     </div>
                                 </div>
-                                <span className="font-bold text-lg">1,284</span>
+                                <span className="font-bold text-lg">{totalUsers.toLocaleString()}</span>
                             </div>
                             <p className="text-[10px] text-muted-foreground leading-relaxed uppercase tracking-wider font-medium">
-                                New users have increased by <span className="text-primary font-bold">12%</span> this week. Complete the user verification to enable high-volume API access.
+                                Total registered users in the DevSuite ecosystem. Use the admin panel to manage roles and access.
                             </p>
                         </CardContent>
                     </Card>

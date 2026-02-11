@@ -1,9 +1,15 @@
+import { db } from "@/lib/db"
+import { starters } from "@/db/schema"
+import { desc } from "drizzle-orm"
 import { StarterTable } from "@/components/admin/starter-table"
 import { Button } from "@/components/ui/button"
 import { Plus, Rocket, Download } from "lucide-react"
 import Link from "next/link"
 
-export default function AdminStartersPage() {
+export default async function AdminStartersPage() {
+    const data = await db.query.starters.findMany({
+        orderBy: [desc(starters.createdAt)]
+    })
     return (
         <div className="space-y-10">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -25,7 +31,7 @@ export default function AdminStartersPage() {
                 </div>
             </div>
 
-            <StarterTable />
+            <StarterTable initialStarters={data} />
         </div>
     )
 }

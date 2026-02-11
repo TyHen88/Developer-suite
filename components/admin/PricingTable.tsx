@@ -37,8 +37,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { togglePlanActive, deletePlan } from "@/actions/pricingActions"
 
-export function PricingTable() {
-    const [plans, setPlans] = React.useState<AdminPricingPlan[]>(MOCK_ADMIN_PRICING_PLANS)
+export function PricingTable({ initialPlans }: { initialPlans: any[] }) {
+    const [plans, setPlans] = React.useState<any[]>(initialPlans)
     const [searchQuery, setSearchQuery] = React.useState("")
     const [statusFilter, setStatusFilter] = React.useState<string>("all")
 

@@ -14,11 +14,11 @@ import { type UIComponent, type ComponentCategory } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 
-export default function ComponentGallery() {
+export default function ComponentGallery({ initialComponents }: { initialComponents: UIComponent[] }) {
     const [searchQuery, setSearchQuery] = React.useState("")
     const [selectedCategory, setSelectedCategory] = React.useState<ComponentCategory | "all">("all")
-    const [filteredComponents, setFilteredComponents] = React.useState<UIComponent[]>([])
-    const [isLoading, setIsLoading] = React.useState(true)
+    const [filteredComponents, setFilteredComponents] = React.useState<UIComponent[]>(initialComponents)
+    const [isLoading, setIsLoading] = React.useState(false)
     const [selectedComponent, setSelectedComponent] = React.useState<UIComponent | null>(null)
     const [isCopied, setIsCopied] = React.useState(false)
 

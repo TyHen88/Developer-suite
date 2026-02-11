@@ -7,12 +7,20 @@ export const metadata = {
     description: 'Pro-grade high-performance starter kits for Next.js, React, and more.',
 }
 
-export default function StartersPage() {
+import { db } from '@/lib/db'
+import { starters } from '@/db/schema'
+import { desc } from 'drizzle-orm'
+
+export default async function StartersPage() {
+    const data = await db.query.starters.findMany({
+        orderBy: [desc(starters.createdAt)]
+    })
+
     return (
         <div className="min-h-screen bg-background text-foreground flex flex-col">
             <Header />
             <main className="flex-1">
-                <StarterGallery />
+                <StarterGallery initialStarters={data as any} />
             </main>
             <Footer />
         </div>

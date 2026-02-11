@@ -1,9 +1,15 @@
+import { db } from "@/lib/db"
+import { components } from "@/db/schema"
+import { desc } from "drizzle-orm"
 import { ComponentTable } from "@/components/admin/component-table"
 import { Button } from "@/components/ui/button"
 import { Plus, Download } from "lucide-react"
 import Link from "next/link"
 
-export default function AdminComponentsPage() {
+export default async function AdminComponentsPage() {
+    const data = await db.query.components.findMany({
+        orderBy: [desc(components.createdAt)]
+    })
     return (
         <div className="space-y-10">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -25,7 +31,7 @@ export default function AdminComponentsPage() {
                 </div>
             </div>
 
-            <ComponentTable />
+            <ComponentTable initialComponents={data} />
         </div>
     )
 }

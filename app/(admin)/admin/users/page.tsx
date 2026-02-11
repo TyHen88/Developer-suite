@@ -1,9 +1,16 @@
+import { db } from "@/lib/db"
+import { users as usersTable } from "@/db/schema"
+import { desc } from "drizzle-orm"
 import { UserTable } from "@/components/admin/UserTable"
 import { Button } from "@/components/ui/button"
-import { Users, Download, ArrowUpRight, UserPlus } from "lucide-react"
+import { Download, ArrowUpRight, UserPlus, RefreshCw } from "lucide-react"
 import Link from "next/link"
+import { syncClerkUsers } from "@/actions/syncActions"
 
-export default function AdminUsersPage() {
+export default async function AdminUsersPage() {
+    const users = await db.query.users.findMany({
+        orderBy: [desc(usersTable.createdAt)]
+    })
     return (
         <div className="space-y-10">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -12,6 +19,12 @@ export default function AdminUsersPage() {
                     <p className="text-muted-foreground font-medium">Control access, roles, and moderation for the DevSuite community.</p>
                 </div>
                 <div className="flex items-center gap-3">
+                    <form action={async () => { "use server"; await syncClerkUsers(); }}>
+                        <Button variant="outline" size="sm" className="rounded-xl h-10 gap-2 border-border/50 bg-card/40 backdrop-blur-md">
+                            <RefreshCw size={14} />
+                            Sync Clerk
+                        </Button>
+                    </form>
                     <Button variant="outline" size="sm" className="rounded-xl h-10 gap-2 border-border/50 bg-card/40 backdrop-blur-md">
                         <Download size={14} />
                         Export Data
@@ -56,7 +69,7 @@ export default function AdminUsersPage() {
                 </div>
             </div>
 
-            <UserTable />
+            <UserTable initialUsers={users} />
         </div>
     )
 }

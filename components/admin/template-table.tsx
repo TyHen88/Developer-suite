@@ -29,27 +29,35 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 
-export function TemplateTable() {
-    const [templates, setTemplates] = React.useState<AdminTemplate[]>(MOCK_ADMIN_TEMPLATES)
+import { updateTemplate, deleteTemplate } from "@/actions/galleryActions"
+
+export function TemplateTable({ initialTemplates }: { initialTemplates: any[] }) {
+    const [templates, setTemplates] = React.useState<any[]>(initialTemplates)
     const [searchQuery, setSearchQuery] = React.useState("")
 
     const filteredTemplates = templates.filter(t =>
-        t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (t.name || t.title).toLowerCase().includes(searchQuery.toLowerCase()) ||
         t.category.toLowerCase().includes(searchQuery.toLowerCase())
     )
 
-    const togglePublish = (id: string) => {
-        setTemplates(prev => prev.map(t =>
-            t.id === id ? { ...t, isPublished: !t.isPublished } : t
-        ))
-        const temp = templates.find(t => t.id === id)
-        toast.success(`${temp?.title} ${!temp?.isPublished ? 'published' : 'unpublished'}`)
+    const handleTogglePublish = async (template: any) => {
+        const newStatus = !template.isPublished
+        const res = await updateTemplate(template.id, { isPublished: newStatus })
+        if (res.success) {
+            setTemplates(prev => prev.map(t =>
+                t.id === template.id ? { ...t, isPublished: newStatus } : t
+            ))
+            toast.success(`${template.name || template.title} ${newStatus ? 'published' : 'unpublished'}`)
+        }
     }
 
-    const deleteTemplate = (id: string) => {
-        if (confirm("Are you sure you want to delete this template?")) {
-            setTemplates(prev => prev.filter(t => t.id !== id))
-            toast.success("Template deleted")
+    const handleDelete = async (id: string, name: string) => {
+        if (confirm(`Are you sure you want to delete "${name}"?`)) {
+            const res = await deleteTemplate(id)
+            if (res.success) {
+                setTemplates(prev => prev.filter(t => t.id !== id))
+                toast.success("Template deleted")
+            }
         }
     }
 
@@ -93,7 +101,7 @@ export function TemplateTable() {
                                             )}
                                         </div>
                                     </TableCell>
-                                    <TableCell className="font-bold">{template.title}</TableCell>
+                                    <TableCell className="font-bold">{template.name || template.title}</TableCell>
                                     <TableCell>
                                         <Badge variant="outline" className="text-[10px] font-bold uppercase">
                                             {template.category}
@@ -125,7 +133,7 @@ export function TemplateTable() {
                                                 variant="ghost"
                                                 size="icon"
                                                 className="h-8 w-8 text-muted-foreground hover:text-emerald-500"
-                                                onClick={() => togglePublish(template.id)}
+                                                onClick={() => handleTogglePublish(template)}
                                             >
                                                 <Eye className="h-4 w-4" />
                                             </Button>
@@ -133,7 +141,7 @@ export function TemplateTable() {
                                                 variant="ghost"
                                                 size="icon"
                                                 className="h-8 w-8 text-muted-foreground hover:text-red-500"
-                                                onClick={() => deleteTemplate(template.id)}
+                                                onClick={() => handleDelete(template.id, template.name || template.title)}
                                             >
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>

@@ -1,9 +1,15 @@
+import { db } from "@/lib/db"
+import { pricingPlans } from "@/db/schema"
+import { asc } from "drizzle-orm"
 import { PricingTable } from "@/components/admin/PricingTable"
 import { Button } from "@/components/ui/button"
 import { Plus, DollarSign, TrendingUp } from "lucide-react"
 import Link from "next/link"
 
-export default function AdminPricingPage() {
+export default async function AdminPricingPage() {
+    const plans = await db.query.pricingPlans.findMany({
+        orderBy: [asc(pricingPlans.sortOrder)]
+    })
     return (
         <div className="space-y-10">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -50,7 +56,7 @@ export default function AdminPricingPage() {
                 </div>
             </div>
 
-            <PricingTable />
+            <PricingTable initialPlans={plans} />
         </div>
     )
 }

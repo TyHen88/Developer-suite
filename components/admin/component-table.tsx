@@ -31,8 +31,10 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 
-export function ComponentTable() {
-    const [components, setComponents] = React.useState<AdminComponent[]>(MOCK_ADMIN_COMPONENTS)
+import { updateComponent, deleteComponent } from "@/actions/galleryActions"
+
+export function ComponentTable({ initialComponents }: { initialComponents: any[] }) {
+    const [components, setComponents] = React.useState<any[]>(initialComponents)
     const [searchQuery, setSearchQuery] = React.useState("")
     const [showPublishedOnly, setShowPublishedOnly] = React.useState(false)
 
@@ -43,19 +45,24 @@ export function ComponentTable() {
         return matchesSearch && matchesStatus
     })
 
-    // Optimistic UI for toggle publish
-    const togglePublish = (id: string) => {
-        setComponents(prev => prev.map(c =>
-            c.id === id ? { ...c, isPublished: !c.isPublished } : c
-        ))
-        const comp = components.find(c => c.id === id)
-        toast.success(`${comp?.name} ${!comp?.isPublished ? 'published' : 'unpublished'}`)
+    const handleTogglePublish = async (component: any) => {
+        const newStatus = !component.isPublished
+        const res = await updateComponent(component.id, { isPublished: newStatus })
+        if (res.success) {
+            setComponents(prev => prev.map(c =>
+                c.id === component.id ? { ...c, isPublished: newStatus } : c
+            ))
+            toast.success(`${component.name} ${newStatus ? 'published' : 'unpublished'}`)
+        }
     }
 
-    const deleteComponent = (id: string) => {
-        if (confirm("Are you sure you want to delete this component?")) {
-            setComponents(prev => prev.filter(c => c.id !== id))
-            toast.success("Component deleted")
+    const handleDelete = async (id: string, name: string) => {
+        if (confirm(`Are you sure you want to delete "${name}"?`)) {
+            const res = await deleteComponent(id)
+            if (res.success) {
+                setComponents(prev => prev.filter(c => c.id !== id))
+                toast.success("Component deleted")
+            }
         }
     }
 
@@ -122,7 +129,7 @@ export function ComponentTable() {
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex flex-wrap gap-1">
-                                            {component.tags.slice(0, 2).map(tag => (
+                                            {component.tags.slice(0, 2).map((tag: string) => (
                                                 <span key={tag} className="text-[10px] text-muted-foreground">#{tag}</span>
                                             ))}
                                             {component.tags.length > 2 && <span className="text-[10px] text-muted-foreground">+{component.tags.length - 2}</span>}
@@ -142,7 +149,7 @@ export function ComponentTable() {
                                                 variant="ghost"
                                                 size="icon"
                                                 className="h-8 w-8 text-muted-foreground hover:text-emerald-500"
-                                                onClick={() => togglePublish(component.id)}
+                                                onClick={() => handleTogglePublish(component)}
                                             >
                                                 <Eye className="h-4 w-4" />
                                             </Button>
@@ -150,7 +157,7 @@ export function ComponentTable() {
                                                 variant="ghost"
                                                 size="icon"
                                                 className="h-8 w-8 text-muted-foreground hover:text-red-500"
-                                                onClick={() => deleteComponent(component.id)}
+                                                onClick={() => handleDelete(component.id, component.name)}
                                             >
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>

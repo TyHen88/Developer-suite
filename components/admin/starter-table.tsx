@@ -32,14 +32,16 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 
-export function StarterTable() {
-    const [starters, setStarters] = React.useState<AdminStarter[]>(MOCK_ADMIN_STARTERS)
+import { updateStarter, deleteStarter } from "@/actions/galleryActions"
+
+export function StarterTable({ initialStarters }: { initialStarters: any[] }) {
+    const [starters, setStarters] = React.useState<any[]>(initialStarters)
     const [searchQuery, setSearchQuery] = React.useState("")
     const [selectedIds, setSelectedIds] = React.useState<string[]>([])
 
     const filteredStarters = starters.filter(s =>
         s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        s.techStack.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()))
+        (s.stack || s.techStack || []).some((t: string) => t.toLowerCase().includes(searchQuery.toLowerCase()))
     )
 
     const toggleSelectAll = () => {
@@ -56,18 +58,24 @@ export function StarterTable() {
         )
     }
 
-    const togglePublish = (id: string) => {
-        setStarters(prev => prev.map(s =>
-            s.id === id ? { ...s, isPublished: !s.isPublished } : s
-        ))
-        const starter = starters.find(s => s.id === id)
-        toast.success(`${starter?.name} ${!starter?.isPublished ? 'published' : 'unpublished'}`)
+    const handleTogglePublish = async (starter: any) => {
+        const newStatus = !starter.isPublished
+        const res = await updateStarter(starter.id, { isPublished: newStatus })
+        if (res.success) {
+            setStarters(prev => prev.map(s =>
+                s.id === starter.id ? { ...s, isPublished: newStatus } : s
+            ))
+            toast.success(`${starter.name} ${newStatus ? 'published' : 'unpublished'}`)
+        }
     }
 
-    const deleteStarter = (id: string) => {
-        if (confirm("Are you sure you want to delete this starter?")) {
-            setStarters(prev => prev.filter(s => s.id !== id))
-            toast.success("Starter deleted")
+    const handleDelete = async (id: string, name: string) => {
+        if (confirm(`Are you sure you want to delete "${name}"?`)) {
+            const res = await deleteStarter(id)
+            if (res.success) {
+                setStarters(prev => prev.filter(s => s.id !== id))
+                toast.success("Starter deleted")
+            }
         }
     }
 
@@ -152,7 +160,7 @@ export function StarterTable() {
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex flex-wrap gap-1">
-                                            {starter.techStack.map(tech => (
+                                            {(starter.stack || starter.techStack || []).map((tech: string) => (
                                                 <Badge key={tech} variant="secondary" className="text-[9px] font-bold px-1.5 py-0 h-4 border-none bg-primary/5 text-primary">
                                                     {tech}
                                                 </Badge>
@@ -161,14 +169,14 @@ export function StarterTable() {
                                     </TableCell>
                                     <TableCell>
                                         <span className="text-xs font-semibold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full border border-border/50">
-                                            {starter.features.length} features
+                                            {starter.features?.length || 0} features
                                         </span>
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-2">
                                             <Switch
                                                 checked={starter.isPublished}
-                                                onCheckedChange={() => togglePublish(starter.id)}
+                                                onCheckedChange={() => handleTogglePublish(starter)}
                                                 className="scale-75"
                                             />
                                             <span className={cn(
@@ -197,7 +205,7 @@ export function StarterTable() {
                                                 variant="ghost"
                                                 size="icon"
                                                 className="h-8 w-8 text-muted-foreground hover:text-red-500"
-                                                onClick={() => deleteStarter(starter.id)}
+                                                onClick={() => handleDelete(starter.id, starter.name)}
                                             >
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>

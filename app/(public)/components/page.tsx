@@ -7,12 +7,20 @@ export const metadata = {
     description: 'Browse our interactive collection of professional UI components.',
 }
 
-export default function ComponentsPage() {
+import { db } from '@/lib/db'
+import { components } from '@/db/schema'
+import { desc } from 'drizzle-orm'
+
+export default async function ComponentsPage() {
+    const data = await db.query.components.findMany({
+        orderBy: [desc(components.createdAt)]
+    })
+
     return (
         <div className="min-h-screen bg-background text-foreground flex flex-col">
             <Header />
             <main className="flex-1">
-                <ComponentGallery />
+                <ComponentGallery initialComponents={data as any} />
             </main>
             <Footer />
         </div>

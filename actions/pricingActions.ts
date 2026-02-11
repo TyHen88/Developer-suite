@@ -1,35 +1,78 @@
-"use client"
+"use server"
 
-import { toast } from "sonner"
-import { AdminPricingPlan } from "@/lib/mock-data"
-
-// TODO: Integrate real Stripe/Clerk Billing plan sync here
+import { db } from "@/lib/db";
+import { pricingPlans } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { auth } from "@clerk/nextjs/server";
 
 export async function createPlan(data: any) {
-  console.log("Creating new pricing plan:", data)
-  await new Promise(resolve => setTimeout(resolve, 800))
-  toast.success(`Plan "${data.name}" created successfully`)
-  return { success: true, id: "plan-" + Math.random().toString(36).substr(2, 9) }
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+
+  const [newPlan] = await db.insert(pricingPlans).values({
+    name: data.name,
+    slug: data.slug,
+    description: data.description,
+    monthlyPrice: data.monthlyPrice,
+    yearlyPrice: data.yearlyPrice,
+    savingsPercent: data.savingsPercent,
+    features: data.features,
+    isPopular: data.isPopular,
+    isActive: data.isActive,
+    sortOrder: data.sortOrder,
+  }).returning();
+
+  revalidatePath("/admin/pricing");
+  revalidatePath("/pricing");
+  return { success: true, id: newPlan.id };
 }
 
 export async function updatePlan(id: string, data: any) {
-  console.log(`Updating pricing plan ${id}:`, data)
-  await new Promise(resolve => setTimeout(resolve, 800))
-  toast.success(`Plan "${data.name}" updated successfully`)
-  return { success: true }
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+
+  await db.update(pricingPlans).set({
+    name: data.name,
+    slug: data.slug,
+    description: data.description,
+    monthlyPrice: data.monthlyPrice,
+    yearlyPrice: data.yearlyPrice,
+    savingsPercent: data.savingsPercent,
+    features: data.features,
+    isPopular: data.isPopular,
+    isActive: data.isActive,
+    sortOrder: data.sortOrder,
+    updatedAt: new Date(),
+  }).where(eq(pricingPlans.id, id));
+
+  revalidatePath("/admin/pricing");
+  revalidatePath("/pricing");
+  return { success: true };
 }
 
 export async function deletePlan(id: string) {
-  console.log(`Deleting pricing plan ${id}`)
-  await new Promise(resolve => setTimeout(resolve, 500))
-  toast.success("Plan deleted successfully")
-  return { success: true }
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+
+  await db.delete(pricingPlans).where(eq(pricingPlans.id, id));
+
+  revalidatePath("/admin/pricing");
+  revalidatePath("/pricing");
+  return { success: true };
 }
 
 export async function togglePlanActive(id: string, currentStatus: boolean) {
-  const newStatus = !currentStatus
-  console.log(`Toggling active status for ${id} to ${newStatus}`)
-  await new Promise(resolve => setTimeout(resolve, 300))
-  toast.success(`Plan ${newStatus ? "activated" : "archived"}`)
-  return { success: true, newStatus }
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+
+  const newStatus = !currentStatus;
+  await db.update(pricingPlans).set({
+    isActive: newStatus,
+    updatedAt: new Date(),
+  }).where(eq(pricingPlans.id, id));
+
+  revalidatePath("/admin/pricing");
+  revalidatePath("/pricing");
+  return { success: true, newStatus };
 }
