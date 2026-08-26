@@ -7,15 +7,20 @@ import { Plus, DollarSign, TrendingUp } from "lucide-react"
 import Link from "next/link"
 
 export default async function AdminPricingPage() {
-    const plans = await db.query.pricingPlans.findMany({
-        orderBy: [asc(pricingPlans.sortOrder)]
-    })
+    let plans: any[] = []
+    try {
+        plans = await db.query.pricingPlans.findMany({
+            orderBy: [asc(pricingPlans.sortOrder)]
+        })
+    } catch (err) {
+        console.warn("Failed fetching admin pricing plans:", err)
+    }
     return (
         <div className="space-y-10">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
                     <h1 className="text-4xl font-black tracking-tighter">Pricing Engine</h1>
-                    <p className="text-muted-foreground font-medium">Manage tiers, features, and monetization strategies for DevSuite.</p>
+                    <p className="text-muted-foreground font-medium">Manage tiers, features, and monetization strategies for Bayon Developer.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <Button variant="outline" size="sm" className="rounded-xl h-10 gap-2 border-border/50 bg-card/40 backdrop-blur-md">

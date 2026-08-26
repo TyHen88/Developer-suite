@@ -26,21 +26,21 @@ export default function ResourceCard({ resource }: ResourceCardProps) {
   }
 
   return (
-    <div className="group relative flex flex-col h-full p-6 rounded-lg border border-border bg-card hover:border-primary/50 transition-all duration-200 hover:shadow-lg dark:hover:shadow-primary/10">
+    <div className="group relative flex flex-col h-full p-6 paper-card spotlight-card">
       {/* Badge */}
       {resource.badge && (
-        <div className={`absolute top-4 right-4 text-xs font-semibold px-3 py-1 rounded-full ${badgeColors[resource.badge]}`}>
+        <div className={`absolute top-4 right-4 text-[11px] font-bold tracking-wide uppercase px-2.5 py-0.5 rounded-full border border-current/20 ${badgeColors[resource.badge]}`}>
           {resource.badge}
         </div>
       )}
 
       {/* Category Badge */}
-      <div className={`inline-flex w-fit text-xs font-semibold px-3 py-1 rounded-full mb-4 ${categoryColors[resource.category]}`}>
+      <div className={`inline-flex w-fit text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-lg mb-4 border border-current/15 ${categoryColors[resource.category]}`}>
         {resource.category.charAt(0).toUpperCase() + resource.category.slice(1)}
       </div>
 
       {/* Title */}
-      <h3 className="text-lg font-semibold mb-2 text-foreground group-hover:text-primary transition-colors">
+      <h3 className="text-lg font-bold mb-2 text-foreground group-hover:text-cyan-400 transition-colors">
         {resource.title}
       </h3>
 

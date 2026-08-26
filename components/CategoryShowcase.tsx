@@ -48,21 +48,23 @@ export default function CategoryShowcase() {
           {CATEGORIES.map((category, index) => (
             <div
               key={index}
-              className="group relative p-6 rounded-lg border border-border bg-background hover:border-primary/50 transition-all duration-200 cursor-pointer hover:shadow-lg dark:hover:shadow-primary/10"
+              className="group relative p-6 paper-card spotlight-card cursor-pointer"
             >
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">
+                  <h3 className="text-lg font-bold text-foreground group-hover:text-cyan-400 transition-colors">
                     {category.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-xs text-muted-foreground mt-1 font-mono uppercase tracking-wider">
                     {category.resources} resources
                   </p>
                 </div>
-                <ArrowRight
-                  size={20}
-                  className="text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all opacity-0 group-hover:opacity-100"
-                />
+                <div className="h-8 w-8 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                  <ArrowRight
+                    size={16}
+                    className="group-hover:translate-x-0.5 transition-transform"
+                  />
+                </div>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {category.description}

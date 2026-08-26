@@ -82,7 +82,7 @@ export function PricingContent({ plans }: { plans: any[] }) {
             <div className="mt-32 max-w-3xl mx-auto space-y-12">
                 <div className="text-center">
                     <h2 className="text-3xl font-bold">Frequently Asked Questions</h2>
-                    <p className="text-muted-foreground mt-2">Everything you need to know about DevSuite subscriptions.</p>
+                    <p className="text-muted-foreground mt-2">Everything you need to know about Bayon Developer subscriptions.</p>
                 </div>
 
                 <Accordion type="single" collapsible className="w-full">

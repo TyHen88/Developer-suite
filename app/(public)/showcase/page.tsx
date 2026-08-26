@@ -39,12 +39,12 @@ export default function ShowcasePage() {
                     <div className="flex flex-col gap-12">
                         {/* Hero Section */}
                         <div className="max-w-3xl space-y-4">
-                            <h1 className="text-4xl font-extrabold tracking-tight lg:text-6xl bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                                Built with DevSuite
+                            <h1 className="text-4xl font-extrabold tracking-tight lg:text-6xl text-gradient-primary">
+                                Built with Bayon Developer
                             </h1>
                             <p className="text-xl text-muted-foreground leading-relaxed">
-                                Explore the next generation of applications built by our global community.
-                                High-performance, accessible, and stunningly designed using our professional components.
+                                Explore the next generation of applications built by our global community of engineers.
+                                High-performance, accessible, and stunningly designed using Bayon Developer architectural primitives.
                             </p>
                         </div>
 

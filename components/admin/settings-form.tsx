@@ -69,12 +69,12 @@ const settingsSchema = z.object({
 type SettingsFormValues = z.infer<typeof settingsSchema>
 
 const defaultValues: SettingsFormValues = {
-    siteName: "DevSuite Admin",
-    siteDescription: "The ultimate dashboard for modern web developers.",
+    siteName: "Bayon Developer",
+    siteDescription: "Modern Developer Infrastructure & Architectural Ecosystem.",
     logoUrl: "",
     clerkPublishableKey: "pk_test_...",
-    allowedDomains: "devsuite.io, google.com",
-    primaryColor: "#3b82f6",
+    allowedDomains: "bayondeveloper.io, google.com",
+    primaryColor: "#06b6d4",
     enableGlassmorphism: true,
     emailNotifications: true,
     slackWebhookUrl: "",
@@ -357,7 +357,7 @@ export function SettingsForm() {
                                         <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
                                             <Zap size={18} className="text-white fill-current" />
                                         </div>
-                                        <span className="font-bold tracking-tight text-lg">{watchSiteName || "DevSuite"}</span>
+                                        <span className="font-bold tracking-tight text-lg">{watchSiteName || "Bayon Developer"}</span>
                                     </div>
                                     <div className="h-4 w-3/4 bg-muted rounded-full mb-2" />
                                     <div className="h-4 w-1/2 bg-muted rounded-full" />

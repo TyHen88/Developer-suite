@@ -75,10 +75,13 @@ export function AdminSidebar() {
                 {/* Header/Logo Section */}
                 <div className="h-20 flex items-center justify-between px-6 border-b border-border/50">
                     <div className={cn("flex items-center gap-3 transition-all duration-300", isCollapsed ? "scale-0 w-0 opacity-0" : "scale-100 w-auto opacity-100")}>
-                        <div className="h-9 w-9 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20" aria-hidden="true">
-                            <Zap size={20} className="text-primary-foreground fill-current" />
+                        <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20" aria-hidden="true">
+                            <span className="font-black text-white text-base">B</span>
                         </div>
-                        <span className="font-bold text-xl tracking-tight">DevSuite</span>
+                        <div className="flex flex-col">
+                            <span className="font-bold text-base tracking-tight leading-none">Bayon <span className="text-cyan-400">Dev</span></span>
+                            <span className="text-[9px] uppercase tracking-widest text-muted-foreground font-bold">Admin Console</span>
+                        </div>
                     </div>
                     <Button
                         variant="ghost"
@@ -173,7 +176,7 @@ export function AdminSidebar() {
                         {!isCollapsed && (
                             <div className="flex flex-col min-w-0">
                                 <span className="text-xs font-bold truncate">Admin User</span>
-                                <span className="text-[10px] text-muted-foreground truncate">admin@devsuite.io</span>
+                                <span className="text-[10px] text-muted-foreground truncate">admin@bayondeveloper.io</span>
                             </div>
                         )}
                     </div>

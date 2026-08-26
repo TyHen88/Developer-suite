@@ -7,9 +7,14 @@ import { Plus, LayoutTemplate } from "lucide-react"
 import Link from "next/link"
 
 export default async function AdminTemplatesPage() {
-    const data = await db.query.templates.findMany({
-        orderBy: [desc(templates.createdAt)]
-    })
+    let data: any[] = []
+    try {
+        data = await db.query.templates.findMany({
+            orderBy: [desc(templates.createdAt)]
+        })
+    } catch (err) {
+        console.warn("Failed fetching admin templates:", err)
+    }
     return (
         <div className="space-y-10">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

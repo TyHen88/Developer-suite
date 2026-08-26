@@ -15,8 +15,8 @@ export async function generateMetadata({ params }: DocPageProps) {
     if (!doc) return { title: 'Not Found' }
 
     return {
-        title: `${doc.title} | Documentation | DevSuite`,
-        description: `Learn more about ${doc.title.toLowerCase()} in DevSuite.`,
+        title: `${doc.title} | Documentation | Bayon Developer`,
+        description: `Learn more about ${doc.title.toLowerCase()} in Bayon Developer.`,
     }
 }
 

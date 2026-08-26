@@ -8,15 +8,20 @@ import Link from "next/link"
 import { syncClerkUsers } from "@/actions/syncActions"
 
 export default async function AdminUsersPage() {
-    const users = await db.query.users.findMany({
-        orderBy: [desc(usersTable.createdAt)]
-    })
+    let users: any[] = []
+    try {
+        users = await db.query.users.findMany({
+            orderBy: [desc(usersTable.createdAt)]
+        })
+    } catch (err) {
+        console.warn("Failed fetching users:", err)
+    }
     return (
         <div className="space-y-10">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
                     <h1 className="text-4xl font-black tracking-tighter">User Management</h1>
-                    <p className="text-muted-foreground font-medium">Control access, roles, and moderation for the DevSuite community.</p>
+                    <p className="text-muted-foreground font-medium">Control access, roles, and moderation for the Bayon Developer community.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <form action={async () => { "use server"; await syncClerkUsers(); }}>

@@ -51,7 +51,7 @@ export default function ExamplesPage() {
                             </h1>
                             <p className="text-xl text-muted-foreground leading-relaxed">
                                 Learn by doing. Browse our collection of mini-apps and common UI patterns
-                                built with DevSuite components to accelerate your development.
+                                built with Bayon Developer components to accelerate your development.
                             </p>
                         </div>
 

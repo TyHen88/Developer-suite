@@ -7,20 +7,25 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
-          <div>
-            <h3 className="font-bold text-lg mb-4">DevSuite</h3>
-            <p className="text-sm text-muted-foreground mb-6">
-              Your complete developer toolkit for building modern web applications.
+          <div className="space-y-4">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-md">
+                <span className="font-black text-white text-sm">B</span>
+              </div>
+              <span className="font-bold text-lg tracking-tight">Bayon <span className="text-cyan-400">Developer</span></span>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Empowering engineers with production-ready architectures, components, and full-stack ecosystems.
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-4 pt-2">
               <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                <Github size={20} />
+                <Github size={18} />
               </Link>
               <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                <Twitter size={20} />
+                <Twitter size={18} />
               </Link>
               <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                <Linkedin size={20} />
+                <Linkedin size={18} />
               </Link>
             </div>
           </div>
@@ -108,12 +113,12 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="border-t border-border/50 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            © 2024 DevSuite. All rights reserved.
+            © 2026 Bayon Developer. All rights reserved.
           </p>
           <div className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
-            Built with modern technologies
+            Built with modern architecture
             <ExternalLink size={14} />
           </div>
         </div>

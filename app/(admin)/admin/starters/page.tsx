@@ -7,9 +7,14 @@ import { Plus, Rocket, Download } from "lucide-react"
 import Link from "next/link"
 
 export default async function AdminStartersPage() {
-    const data = await db.query.starters.findMany({
-        orderBy: [desc(starters.createdAt)]
-    })
+    let data: any[] = []
+    try {
+        data = await db.query.starters.findMany({
+            orderBy: [desc(starters.createdAt)]
+        })
+    } catch (err) {
+        console.warn("Failed fetching admin starters:", err)
+    }
     return (
         <div className="space-y-10">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

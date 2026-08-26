@@ -29,20 +29,30 @@ const iconMap: Record<string, any> = {
 export default async function AdminDashboard() {
     const user = await currentUser()
 
-    // Fetch counts in parallel
-    const [userCount, componentCount, templateCount, starterCount] = await Promise.all([
-        db.select({ value: count() }).from(usersTable),
-        db.select({ value: count() }).from(components),
-        db.select({ value: count() }).from(templates),
-        db.select({ value: count() }).from(starters),
-    ])
+    let totalUsers = 0
+    let componentCountVal = 0
+    let templateCountVal = 0
+    let starterCountVal = 0
 
-    const totalUsers = userCount[0].value
+    try {
+        const [userCount, componentCount, templateCount, starterCount] = await Promise.all([
+            db.select({ value: count() }).from(usersTable),
+            db.select({ value: count() }).from(components),
+            db.select({ value: count() }).from(templates),
+            db.select({ value: count() }).from(starters),
+        ])
+        totalUsers = userCount[0]?.value || 0
+        componentCountVal = componentCount[0]?.value || 0
+        templateCountVal = templateCount[0]?.value || 0
+        starterCountVal = starterCount[0]?.value || 0
+    } catch (err) {
+        console.warn("Admin dashboard DB fetch failed:", err)
+    }
 
     const stats = [
-        { label: "Components", value: componentCount[0].value.toString(), trend: 12.5, published: componentCount[0].value, draft: 0 },
-        { label: "Templates", value: templateCount[0].value.toString(), trend: 8.2, published: templateCount[0].value, draft: 0 },
-        { label: "Starters", value: starterCount[0].value.toString(), trend: 5.1, published: starterCount[0].value, draft: 0 },
+        { label: "Components", value: componentCountVal.toString(), trend: 12.5, published: componentCountVal, draft: 0 },
+        { label: "Templates", value: templateCountVal.toString(), trend: 8.2, published: templateCountVal, draft: 0 },
+        { label: "Starters", value: starterCountVal.toString(), trend: 5.1, published: starterCountVal, draft: 0 },
         { label: "Docs", value: "84", trend: 2.4, published: 80, draft: 4 },
     ]
 
@@ -58,7 +68,7 @@ export default async function AdminDashboard() {
                         Dashboard
                     </h1>
                     <p className="text-muted-foreground font-medium">
-                        Welcome back, <span className="text-foreground font-bold">{user?.firstName || "Admin"}</span>. Here's what's happening with DevSuite today.
+                        Welcome back, <span className="text-foreground font-bold">{user?.firstName || "Admin"}</span>. Here's what's happening with Bayon Developer today.
                     </p>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 bg-primary/5 border border-primary/10 rounded-2xl">
@@ -147,7 +157,7 @@ export default async function AdminDashboard() {
                                 <span className="font-bold text-lg">{totalUsers.toLocaleString()}</span>
                             </div>
                             <p className="text-[10px] text-muted-foreground leading-relaxed uppercase tracking-wider font-medium">
-                                Total registered users in the DevSuite ecosystem. Use the admin panel to manage roles and access.
+                                Total registered users in the Bayon Developer ecosystem. Use the admin panel to manage roles and access.
                             </p>
                         </CardContent>
                     </Card>

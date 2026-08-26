@@ -1,11 +1,11 @@
-# DevSuite | Modern Developer Infrastructure & Admin Panel
+# Bayon Developer | Modern Developer Infrastructure & Admin Panel
 
-DevSuite is a high-performance, aesthetically premium administrative ecosystem built for modern SaaS products and developer tools. It provides a complete control plane for content management, user orchestration, and monetization strategy.
+Bayon Developer is a high-performance, aesthetically premium administrative ecosystem and UI library built for modern SaaS products and developer tools. It provides a complete control plane for content management, user orchestration, and monetization strategy.
 
-![DevSuite Admin Preview](https://raw.githubusercontent.com/TyHen88/Developer-suite/main/public/devsuite-logo-light.svg)
+![Bayon Developer Preview](https://raw.githubusercontent.com/TyHen88/Developer-suite/main/public/bayon-logo.svg)
 
 ## 🚀 Vision
-To provide developers with a "Day 1" infrastructure that feels like a "Year 5" enterprise product. DevSuite bridges the gap between raw code and a polished, accessible management interface.
+To provide developers with a "Day 1" infrastructure that feels like a "Year 5" enterprise product. Bayon Developer bridges the gap between raw code and a polished, accessible management interface.
 
 ## 💎 Key Features
 
@@ -91,4 +91,4 @@ To provide developers with a "Day 1" infrastructure that feels like a "Year 5" e
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
-Built with ⚡ by the DevSuite Team.
+Built with ⚡ by the Bayon Developer Team.

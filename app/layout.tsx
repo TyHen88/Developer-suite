@@ -7,6 +7,8 @@ import './globals.css'
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "sonner"
 import { AuthSync } from "@/components/AuthSync"
+import { PaperMouseEffect } from "@/components/PaperMouseEffect"
+import { InteractiveCanvasGrid } from "@/components/InteractiveCanvasGrid"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,9 +21,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'DevSuite',
-  description: 'Built with DevSuite - Modern Developer Infrastructure',
-  generator: 'devsuite.io',
+  title: 'Bayon Developer | Modern Developer Infrastructure & UI Ecosystem',
+  description: 'High-performance components, starters, and templates built for modern engineers.',
+  generator: 'bayondeveloper.io',
   icons: {
     icon: [
       {
@@ -50,6 +52,8 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <InteractiveCanvasGrid />
+            <PaperMouseEffect />
             {children}
             <AuthSync />
             <Toaster />
